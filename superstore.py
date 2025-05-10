@@ -58,3 +58,65 @@ plt.xlabel('Profit')
 plt.title('Top 10 Cities by Profit')
 plt.gca().invert_yaxis()
 plt.show()
+
+# 檢查缺失值
+print(df.isnull().sum())
+
+# 填補缺失值（假設填補為0）
+df.fillna(0, inplace=True)
+
+# 檢查資料型別
+print(df.dtypes)
+
+# 先轉換 'Order Date' 欄位為日期格式
+df['Order Date'] = pd.to_datetime(df['Order Date'])
+
+# 計算每一天的銷售額總和
+daily_sales = df.groupby('Order Date')['Sales'].sum()
+
+# 找出銷售額最高的日期
+max_sales_date = daily_sales.idxmax()
+max_sales_value = daily_sales.max()
+
+print(f"The highest sales date is: {max_sales_date} with sales value: {max_sales_value}")
+#The highest sales date is: 2014-03-18 00:00:00 with sales value: 28106.716
+
+
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# 設定圖片風格
+sns.set(style="darkgrid")
+
+# 可視化每天的銷售額
+plt.figure(figsize=(10, 6))
+daily_sales.plot(kind='line')
+plt.title("Daily Sales Over Time")
+plt.xlabel("Date")
+plt.ylabel("Sales")
+plt.show()
+
+
+
+# 計算每個產品的銷售總額
+product_sales = df.groupby('Product Name')['Sales'].sum()
+
+# 找出銷售額最高的產品
+top_selling_product = product_sales.idxmax()
+top_selling_product_sales = product_sales.max()
+
+print(f"The top selling product is: {top_selling_product} with sales value: {top_selling_product_sales}")
+#The top selling product is: Canon imageCLASS 2200 Advanced Copier with sales value: 61599.824
+
+# 取得前10名銷售額最高的產品
+top_10_products = product_sales.sort_values(ascending=False).head(10)
+
+# 可視化前10名最暢銷的產品
+plt.figure(figsize=(12, 6))
+top_10_products.plot(kind='bar')
+plt.title("Top 10 Best Selling Products")
+plt.xlabel("Product Name")
+plt.ylabel("Sales")
+plt.xticks(rotation=90)
+plt.show()
